@@ -1,10 +1,11 @@
-﻿# Join-Object.psm1
+﻿# join-object.psm1
+
 
   <#
   .SYNOPSIS
   Join-Object - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.
   .NOTES
-  Version     : 3.2.3.0
+  Version     : 3.2.12.0
   Author      : iRon
   Website     :	https://github.com/iRon7/Join-Object
   Twitter     :	
@@ -259,8 +260,10 @@
   #>
 
 
-$script:ModuleRoot = $PSScriptRoot ; 
-$script:ModuleVersion = (Import-PowerShellDataFile -Path (get-childitem $script:moduleroot\*.psd1).fullname).moduleversion ; 
+$script:ModuleRoot = $PSScriptRoot ;
+$script:ModuleVersion = (Import-PowerShellDataFile -Path (get-childitem $script:moduleroot\*.psd1).fullname).moduleversion ;
+
+#*======v FUNCTIONS v======
 
 
 
@@ -270,7 +273,7 @@ Function Copy-Command {
   .SYNOPSIS
   Copy-Command - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.
   .NOTES
-  Version     : 3.2.3.0
+  Version     : 3.2.2.0
   Author      : iRon
   Website     :	https://github.com/iRon7/Join-Object
   Twitter     :	
@@ -320,7 +323,7 @@ Function Join-Object {
   .SYNOPSIS
   Join-Object - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.
   .NOTES
-  Version     : 3.2.3.0
+  Version     : 3.2.2.0
   Author      : iRon
   Website     :	https://github.com/iRon7/Join-Object
   Twitter     :	
@@ -349,6 +352,7 @@ Function Join-Object {
   .LINK
   https://github.com/tostka/Join-Object
   #>
+  [Alias('Join ')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseLiteralInitializerForHashtable', '', Scope='Function')]
 	[CmdletBinding(DefaultParameterSetName='Default')][OutputType([Object[]])]Param (
 
@@ -625,7 +629,7 @@ Function OutObject {
     .SYNOPSIS
     OutObject - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.
     .NOTES
-    Version     : 3.2.3.0
+    Version     : 3.2.2.0
     Author      : iRon
     Website     :	https://github.com/iRon7/Join-Object
     Twitter     :	
@@ -675,7 +679,7 @@ Function SetExpression {
     .SYNOPSIS
     SetExpression - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.
     .NOTES
-    Version     : 3.2.3.0
+    Version     : 3.2.2.0
     Author      : iRon
     Website     :	https://github.com/iRon7/Join-Object
     Twitter     :	
@@ -730,6 +734,18 @@ Function SetExpression {
 }
 
 #*------^ SetExpression.ps1 ^------
+#*======v _CommonCode v======
+#*------v _CommonCode.ps1 v------
+$JoinCommand = Get-Command Join-Object
+Copy-Command -Command $JoinCommand -Name InnerJoin-Object -Default @{JoinType = 'Inner'}; Set-Alias InnerJoin InnerJoin-Object
+Copy-Command -Command $JoinCommand -Name LeftJoin-Object  -Default @{JoinType = 'Left'};  Set-Alias LeftJoin  LeftJoin-Object
+Copy-Command -Command $JoinCommand -Name RightJoin-Object -Default @{JoinType = 'Right'}; Set-Alias RightJoin RightJoin-Object
+Copy-Command -Command $JoinCommand -Name FullJoin-Object  -Default @{JoinType = 'Full'};  Set-Alias FullJoin  FullJoin-Object
+Copy-Command -Command $JoinCommand -Name CrossJoin-Object -Default @{JoinType = 'Cross'}; Set-Alias CrossJoin CrossJoin-Object
+Copy-Command -Command $JoinCommand -Name Update-Object    -Default @{JoinType = 'Left'; Property = {{If ($Null -ne $RightIndex) {$Right.$_} Else {$Left.$_}}}}; Set-Alias Update Update-Object
+Copy-Command -Command $JoinCommand -Name Merge-Object     -Default @{JoinType = 'Full'; Property = {{If ($Null -ne $RightIndex) {$Right.$_} Else {$Left.$_}}}}; Set-Alias Merge  Merge-Object
+#*------^ END _CommonCode.ps1 ^------
+#*======^ END _CommonCode ^======
 
 #*======^ END FUNCTIONS ^======
 
@@ -739,8 +755,8 @@ Export-ModuleMember -Function Copy-Command,Join-Object,OutObject,SetExpression,O
 # SIG # Begin signature block
 # MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfizTB0CPRmp0BupvkAOvx751
-# yDGgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU15I4q9wpTgPZ60sjkkptZeMN
+# T2OgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
 # MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
 # Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
 # ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
@@ -755,9 +771,9 @@ Export-ModuleMember -Function Copy-Command,Join-Object,OutObject,SetExpression,O
 # AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
 # Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
 # AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
-# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRy1JVg
-# EiDxVplCWaRrJ+KguSJx7jANBgkqhkiG9w0BAQEFAASBgGoB1/o/lYp+rIUd339Z
-# xmBRgDM7VwwddM8paLiU8/Gdn2M8p3McXp+HNzZUE0zjkT9c+tfDkEC+7d2rQ5HU
-# jHld90nc2IdgbV57eYP90iLcxsSk/GSNT2cm0ExPMDgo/s1LnwgP9guKWLaYez7u
-# +sCcnMWqzdOslA5TRZL6tbyE
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBT5bLuI
+# nMKZpM/281NNq+CEWORt+zANBgkqhkiG9w0BAQEFAASBgCnwthb/GUctOG68IBKq
+# BhjhLgzSQcpcOcd2T471B9Pn8gfAj4V+RVftzYKBO9/+u+uq074BLkud5QHm7Usf
+# 6A53hl3D+gbBklrb2sT3nXYjUvB5nHk7nQw8P6+yytygt2TaYeTCrY2WeWk/9nWM
+# IsdPdliLw65jQl5Dr4x74x1t
 # SIG # End signature block

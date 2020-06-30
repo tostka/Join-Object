@@ -33,6 +33,7 @@ Function Join-Object {
   .LINK
   https://github.com/tostka/Join-Object
   #>
+  [Alias('Join ')]
 	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseLiteralInitializerForHashtable', '', Scope='Function')]
 	[CmdletBinding(DefaultParameterSetName='Default')][OutputType([Object[]])]Param (
 

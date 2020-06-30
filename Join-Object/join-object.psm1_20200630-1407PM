@@ -1,4 +1,4 @@
-# join-object.psm1
+﻿# join-object.psm1
 
 
   <#
@@ -317,6 +317,36 @@ Function Copy-Command {
 
 #*------^ Copy-Command.ps1 ^------
 
+#*------v CrossJoin-Object.ps1 v------
+Function CrossJoin-Object {
+    [Alias('CrossJoin')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Cross ; 
+}
+
+#*------^ CrossJoin-Object.ps1 ^------
+
+#*------v FullJoin-Object.ps1 v------
+Function FullJoin-Object {
+    [Alias('FullJoin')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Full ; 
+}
+
+#*------^ FullJoin-Object.ps1 ^------
+
+#*------v InnerJoin-Object.ps1 v------
+Function InnerJoin-Object {
+    [Alias('InnerJoin')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Inner ; 
+}
+
+#*------^ InnerJoin-Object.ps1 ^------
+
 #*------v Join-Object.ps1 v------
 Function Join-Object {
 <#
@@ -623,6 +653,154 @@ Function Join-Object {
 
 #*------^ Join-Object.ps1 ^------
 
+#*------v LeftJoin-Object.ps1 v------
+Function LeftJoin-Object {
+    [Alias('LeftJoin')]
+    [CmdletBinding()]
+    Param (
+
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'Default')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'On')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'Expression')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'Property')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'Discern')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'OnProperty')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'OnDiscern')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'ExpressionProperty')]
+		[Parameter(ValueFromPipeLine = $True, Mandatory = $True, ParameterSetName = 'ExpressionDiscern')]
+		$LeftObject,
+
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'Default')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'On')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'Expression')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'Property')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'Discern')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'OnProperty')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'OnDiscern')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'ExpressionProperty')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'ExpressionDiscern')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'Self')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfOn')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfExpression')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfProperty')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfDiscern')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfOnProperty')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfOnDiscern')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfExpressionProperty')]
+		[Parameter(Position = 0, Mandatory = $True, ParameterSetName = 'SelfExpressionDiscern')]
+		$RightObject,
+
+		[Parameter(Position = 1, ParameterSetName = 'On', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'OnProperty', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'OnDiscern', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfOn', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfOnProperty', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfOnDiscern', Mandatory = $True)]
+		[Alias("Using")][String[]]$On,
+
+		[Parameter(Position = 1, ParameterSetName = 'Expression', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'ExpressionProperty', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'ExpressionDiscern', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfExpression', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfExpressionProperty', Mandatory = $True)]
+		[Parameter(Position = 1, ParameterSetName = 'SelfExpressionDiscern', Mandatory = $True)]
+		[Alias("UsingExpression")][ScriptBlock]$OnExpression,
+
+		[Parameter(ParameterSetName = 'On')]
+		[Parameter(ParameterSetName = 'OnProperty')]
+		[Parameter(ParameterSetName = 'OnDiscern')]
+		[Parameter(ParameterSetName = 'SelfOn')]
+		[Parameter(ParameterSetName = 'SelfOnProperty')]
+		[Parameter(ParameterSetName = 'SelfOnDiscern')]
+		[String[]]$Equals,
+
+		[Parameter(Position = 2, ParameterSetName = 'Discern', Mandatory = $True)]
+		[Parameter(Position = 2, ParameterSetName = 'OnDiscern', Mandatory = $True)]
+		[Parameter(Position = 2, ParameterSetName = 'ExpressionDiscern', Mandatory = $True)]
+		[Parameter(Position = 2, ParameterSetName = 'SelfDiscern', Mandatory = $True)]
+		[Parameter(Position = 2, ParameterSetName = 'SelfOnDiscern', Mandatory = $True)]
+		[Parameter(Position = 2, ParameterSetName = 'SelfExpressionDiscern', Mandatory = $True)]
+		[AllowEmptyString()][String[]]$Discern,
+
+		[Parameter(ParameterSetName = 'Property', Mandatory = $True)]
+		[Parameter(ParameterSetName = 'OnProperty', Mandatory = $True)]
+		[Parameter(ParameterSetName = 'ExpressionProperty', Mandatory = $True)]
+		[Parameter(ParameterSetName = 'SelfProperty', Mandatory = $True)]
+		[Parameter(ParameterSetName = 'SelfOnProperty', Mandatory = $True)]
+		[Parameter(ParameterSetName = 'SelfExpressionProperty', Mandatory = $True)]
+		$Property,
+
+		[Parameter(Position = 3, ParameterSetName = 'Default')]
+		[Parameter(Position = 3, ParameterSetName = 'On')]
+		[Parameter(Position = 3, ParameterSetName = 'Expression')]
+		[Parameter(Position = 3, ParameterSetName = 'Property')]
+		[Parameter(Position = 3, ParameterSetName = 'Discern')]
+		[Parameter(Position = 3, ParameterSetName = 'OnProperty')]
+		[Parameter(Position = 3, ParameterSetName = 'OnDiscern')]
+		[Parameter(Position = 3, ParameterSetName = 'ExpressionProperty')]
+		[Parameter(Position = 3, ParameterSetName = 'ExpressionDiscern')]
+		[Parameter(Position = 3, ParameterSetName = 'Self')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfOn')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfExpression')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfProperty')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfDiscern')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfOnProperty')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfOnDiscern')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfExpressionProperty')]
+		[Parameter(Position = 3, ParameterSetName = 'SelfExpressionDiscern')]
+		[ScriptBlock]$Where = {$True},
+
+		[Parameter(ParameterSetName = 'Default')]
+		[Parameter(ParameterSetName = 'On')]
+		[Parameter(ParameterSetName = 'Expression')]
+		[Parameter(ParameterSetName = 'Property')]
+		[Parameter(ParameterSetName = 'Discern')]
+		[Parameter(ParameterSetName = 'OnProperty')]
+		[Parameter(ParameterSetName = 'OnDiscern')]
+		[Parameter(ParameterSetName = 'ExpressionProperty')]
+		[Parameter(ParameterSetName = 'ExpressionDiscern')]
+		[Parameter(ParameterSetName = 'Self')]
+		[Parameter(ParameterSetName = 'SelfOn')]
+		[Parameter(ParameterSetName = 'SelfExpression')]
+		[Parameter(ParameterSetName = 'SelfProperty')]
+		[Parameter(ParameterSetName = 'SelfDiscern')]
+		[Parameter(ParameterSetName = 'SelfOnProperty')]
+		[Parameter(ParameterSetName = 'SelfOnDiscern')]
+		[Parameter(ParameterSetName = 'SelfExpressionProperty')]
+		[Parameter(ParameterSetName = 'SelfExpressionDiscern')]
+		[ValidateSet('Inner', 'Left', 'Right', 'Full', 'Cross')]$JoinType = 'Inner',
+
+		[Parameter(ParameterSetName = 'On')]
+		[Parameter(ParameterSetName = 'OnProperty')]
+		[Parameter(ParameterSetName = 'OnDiscern')]
+		[Parameter(ParameterSetName = 'SelfOn')]
+		[Parameter(ParameterSetName = 'SelfOnProperty')]
+		[Parameter(ParameterSetName = 'SelfOnDiscern')]
+		[Switch]$Strict,
+
+		[Parameter(ParameterSetName = 'On')]
+		[Parameter(ParameterSetName = 'OnProperty')]
+		[Parameter(ParameterSetName = 'OnDiscern')]
+		[Parameter(ParameterSetName = 'SelfOn')]
+		[Parameter(ParameterSetName = 'SelfOnProperty')]
+		[Parameter(ParameterSetName = 'SelfOnDiscern')]
+		[Alias("CaseSensitive")][Switch]$MatchCase
+	)
+    Join-Object @PSBoundParameters -JoinType Left ; 
+}
+
+#*------^ LeftJoin-Object.ps1 ^------
+
+#*------v Merge-Object.ps1 v------
+Function Merge-Object {
+    [Alias('Merge')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Full -Property:$({{If ($Null -ne $RightIndex) {$Right.$_} Else {$Left.$_}}}) ; 
+}
+
+#*------^ Merge-Object.ps1 ^------
+
 #*------v OutObject.ps1 v------
 Function OutObject {
     <#
@@ -672,6 +850,16 @@ Function OutObject {
 }
 
 #*------^ OutObject.ps1 ^------
+
+#*------v RightJoin-Object.ps1 v------
+Function RightJoin-Object {
+    [Alias('RightJoin')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Right ; 
+}
+
+#*------^ RightJoin-Object.ps1 ^------
 
 #*------v SetExpression.ps1 v------
 Function SetExpression {
@@ -734,6 +922,16 @@ Function SetExpression {
 }
 
 #*------^ SetExpression.ps1 ^------
+
+#*------v Update-Object.ps1 v------
+Function Update-Object {
+    [Alias('Update')]
+    [CmdletBinding()]
+    Param () ; 
+    Join-Object @PSBoundParameters -JoinType Left -Property:$({{If ($Null -ne $RightIndex) {$Right.$_} Else {$Left.$_}}}) ; 
+}
+
+#*------^ Update-Object.ps1 ^------
 #*======v _CommonCode v======
 #*------v _CommonCode.ps1 v------
 $JoinCommand = Get-Command Join-Object
@@ -749,5 +947,31 @@ Copy-Command -Command $JoinCommand -Name Merge-Object     -Default @{JoinType = 
 
 #*======^ END FUNCTIONS ^======
 
-Export-ModuleMember -Function Copy-Command,Join-Object,OutObject,SetExpression,OutObject,SetExpression -Alias *
+Export-ModuleMember -Function Copy-Command,CrossJoin-Object,FullJoin-Object,InnerJoin-Object,Join-Object,OutObject,SetExpression,LeftJoin-Object,Merge-Object,OutObject,RightJoin-Object,SetExpression,Update-Object -Alias *
 
+
+# SIG # Begin signature block
+# MIIELgYJKoZIhvcNAQcCoIIEHzCCBBsCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUuzwfzOO2tsAR3m1m6OssV+e1
+# WAWgggI4MIICNDCCAaGgAwIBAgIQWsnStFUuSIVNR8uhNSlE6TAJBgUrDgMCHQUA
+# MCwxKjAoBgNVBAMTIVBvd2VyU2hlbGwgTG9jYWwgQ2VydGlmaWNhdGUgUm9vdDAe
+# Fw0xNDEyMjkxNzA3MzNaFw0zOTEyMzEyMzU5NTlaMBUxEzARBgNVBAMTClRvZGRT
+# ZWxmSUkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALqRVt7uNweTkZZ+16QG
+# a+NnFYNRPPa8Bnm071ohGe27jNWKPVUbDfd0OY2sqCBQCEFVb5pqcIECRRnlhN5H
+# +EEJmm2x9AU0uS7IHxHeUo8fkW4vm49adkat5gAoOZOwbuNntBOAJy9LCyNs4F1I
+# KKphP3TyDwe8XqsEVwB2m9FPAgMBAAGjdjB0MBMGA1UdJQQMMAoGCCsGAQUFBwMD
+# MF0GA1UdAQRWMFSAEL95r+Rh65kgqZl+tgchMuKhLjAsMSowKAYDVQQDEyFQb3dl
+# clNoZWxsIExvY2FsIENlcnRpZmljYXRlIFJvb3SCEGwiXbeZNci7Rxiz/r43gVsw
+# CQYFKw4DAh0FAAOBgQB6ECSnXHUs7/bCr6Z556K6IDJNWsccjcV89fHA/zKMX0w0
+# 6NefCtxas/QHUA9mS87HRHLzKjFqweA3BnQ5lr5mPDlho8U90Nvtpj58G9I5SPUg
+# CspNr5jEHOL5EdJFBIv3zI2jQ8TPbFGC0Cz72+4oYzSxWpftNX41MmEsZkMaADGC
+# AWAwggFcAgEBMEAwLDEqMCgGA1UEAxMhUG93ZXJTaGVsbCBMb2NhbCBDZXJ0aWZp
+# Y2F0ZSBSb290AhBaydK0VS5IhU1Hy6E1KUTpMAkGBSsOAwIaBQCgeDAYBgorBgEE
+# AYI3AgEMMQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwG
+# CisGAQQBgjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRDT4P5
+# E1gl0Ix6Ay9+Tm/CgVHV0DANBgkqhkiG9w0BAQEFAASBgCmcfhH5Q8MRIHevxNCS
+# nG4MwizD9GMo17T9kjUpH1QM5IltCcFUpJzOwhL6T3yGqMJyis8XC23LW93yF79R
+# BpV1i/G2yiH4WAwZjwzdJcyWTyvvuH0I1XsititBiPI0iBfT6YFzJSZ489nY2waF
+# 67F39+BE7PHkRZ1CLwPtWBBN
+# SIG # End signature block
