@@ -1,4 +1,4 @@
-Function OutObject {
+﻿Function OutObject {
     <#
     .SYNOPSIS
     OutObject - Fork of iRon's Join-Object script conv to PS Module:Combines two object lists based on a related property between them.

@@ -1,4 +1,4 @@
-#*------v _CommonCode.ps1 v------
+﻿#*------v _CommonCode.ps1 v------
 $JoinCommand = Get-Command Join-Object
 Copy-Command -Command $JoinCommand -Name InnerJoin-Object -Default @{JoinType = 'Inner'}; Set-Alias InnerJoin InnerJoin-Object
 Copy-Command -Command $JoinCommand -Name LeftJoin-Object  -Default @{JoinType = 'Left'};  Set-Alias LeftJoin  LeftJoin-Object

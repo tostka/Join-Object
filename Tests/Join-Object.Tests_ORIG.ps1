@@ -1,4 +1,4 @@
-#Requires -Modules @{ModuleName="Pester"; ModuleVersion="4.4.0"}
+﻿#Requires -Modules @{ModuleName="Pester"; ModuleVersion="4.4.0"}
 Set-StrictMode -Version 2
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path

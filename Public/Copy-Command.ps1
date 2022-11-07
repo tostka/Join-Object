@@ -1,4 +1,4 @@
-#*------v Function Copy-Command v------
+﻿#*------v Function Copy-Command v------
 Function Copy-Command {
 <#
   .SYNOPSIS

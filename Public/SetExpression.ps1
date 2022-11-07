@@ -1,4 +1,4 @@
-#*------v Function SetExpression v------
+﻿#*------v Function SetExpression v------
 Function SetExpression {
     <#
     .SYNOPSIS

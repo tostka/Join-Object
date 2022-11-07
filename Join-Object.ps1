@@ -1,4 +1,4 @@
-<#PSScriptInfo
+﻿<#PSScriptInfo
 .VERSION 3.2.2
 .GUID 54688e75-298c-4d4b-a2d0-d478e6069126
 .AUTHOR iRon

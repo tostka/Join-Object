@@ -1,4 +1,4 @@
-#*------v Function Join-Object v------
+﻿#*------v Function Join-Object v------
 Function Join-Object {
 <#
   .SYNOPSIS
